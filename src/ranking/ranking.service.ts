@@ -30,11 +30,9 @@ export class RankingService {
   }
 
   getWinrate(matches: match[]) {
-    //sorting
     const sortedMatches = matches.sort((a, b) => b.gameEndTimestamp - a.gameEndTimestamp);
     const results = sortedMatches.length > 20 ? sortedMatches.slice(0, 20) : sortedMatches;
     
-    //geting winrate
     let wins = 0;
     let loses = 0;
 
@@ -44,19 +42,23 @@ export class RankingService {
     }
     const winRate = (wins / (wins + loses)) * 100;
 
-    //return wins, loses and win-rate
     return {wins, loses, winRate};
   }
 
   // TODO: adicionar cronjob dos rankings
   async updateRanking() {
     try {
+      console.log("Removing old data");
       await this.remove();
+      console.log("Started Ranking update");
       const summoners = await this.summonersService.findAll();
+      console.log("Summoners list:");
+      summoners.forEach( a => console.log(a.gameName));
+
       for (const summoner of summoners) {
         const flex = await this.findMatches(summoner.puuid, 440);
         const soloDuo = await this.findMatches(summoner.puuid, 420);
-        const matches = [...soloDuo, ...flex];
+        const matches = [...flex, ...soloDuo];
         let matchDetailsArray = [];
         
         for (const match of matches) {
@@ -65,12 +67,12 @@ export class RankingService {
           const MatchDetailsByPlayerUuid = matchDetails.data.info.participants.find(({ puuid }) => puuid === summoner.puuid);
           if (matchDetails.data.info.gameDuration < 300) continue;
           matchDetailsArray.push({win: MatchDetailsByPlayerUuid.win, gameEndTimestamp: matchDetails.data.info.gameEndTimestamp});
-          console.log(matchDetailsArray);
         }
         const results = this.getWinrate(matchDetailsArray);
-
         await this.create(results.wins, results.loses, results.winRate, summoner.gameName);
+        console.log(summoner, matchDetailsArray);
       }
+      console.log("Finished updating Ranking");
     } catch (error) {
       console.log(error);
     }
