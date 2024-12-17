@@ -112,7 +112,9 @@ export class RankingService {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
+      timeZone: 'America/Sao_Paulo',
+      hour12: false
     }).replace(/\//g, '/').replace(',', ' às');
     this.logger.log("Ranking enviado, ultima atualização: " + lastUpdated.lastUpdated);
     return { results, lastUpdated: dateString };
