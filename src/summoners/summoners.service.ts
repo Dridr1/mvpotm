@@ -35,4 +35,8 @@ export class SummonersService {
   async remove(where: Prisma.SummonerWhereUniqueInput) {
     return this.prisma.summoner.delete({where,})
   }
+
+  async removeAll() {
+    return this.prisma.summoner.deleteMany();
+  }
 }

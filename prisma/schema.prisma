@@ -27,3 +27,9 @@ model Ranking {
   wins Int
   lose Int
 }
+
+model RunData {
+  id Int @default(autoincrement()) @id
+  isUpdating Boolean
+  lastUpdated DateTime
+}

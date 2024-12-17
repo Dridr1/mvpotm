@@ -11,7 +11,7 @@ type Config = {
 }
 
 export const config = (apiKey: string) => {
-    return {headers: { 'X-Riot-Token': process.env.RIOT_TOKEN}}
+    return {headers: { 'X-Riot-Token': apiKey}}
 };
 
 export const fetchSummonerData = async (summonerDTO: CreateSummonerDto, config: Config) => {

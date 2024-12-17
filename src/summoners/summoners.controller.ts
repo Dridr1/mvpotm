@@ -22,4 +22,9 @@ export class SummonersController {
   remove(@Param('id') where: Prisma.SummonerWhereUniqueInput) {
     return this.summonersService.remove(where);
   }
+
+  @Delete()
+  removeAll() {
+    return this.summonersService.removeAll();
+  }
 }
